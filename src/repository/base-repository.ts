@@ -1,10 +1,10 @@
+import plural from "npm:plural";
 import {
     ObjectId,
     Collection,
 } from "https://deno.land/x/atlas_sdk@v1.1.2/mod.ts";
 import { Database } from "https://deno.land/x/atlas_sdk@v1.1.2/client.ts";
 import {BaseEntity} from "../interfaces/base-entity.inteface.ts";
-import plural from "npm:plural";
 import { IBaseRepository } from "../interfaces/base-repository.interface.ts";
 
 export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> {
