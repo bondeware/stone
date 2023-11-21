@@ -1,3 +1,6 @@
-import plural from "npm:plural";
+import {StoneServer} from "./src/server/index.ts";
+import {BaseEntity} from "./src/interfaces/base-entity.inteface.ts";
 
-console.log(plural("penis"))
+export {StoneServer}
+
+export type {BaseEntity}

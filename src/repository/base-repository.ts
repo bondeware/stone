@@ -7,8 +7,8 @@ import {IBaseRepository} from "../interfaces/base-repository.interface.ts";
 export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> {
     private readonly collection: Collection<T>
 
-    constructor(mongoDatabase: Database, entityClass: new () => T) {
-        const collectionName = plural(entityClass.name.toLowerCase())
+    constructor(mongoDatabase: Database, entityName: string) {
+        const collectionName = plural(entityName.toLowerCase())
         this.collection = mongoDatabase.collection<T>(collectionName)
     }
 
