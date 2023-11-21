@@ -7,7 +7,6 @@ import {BaseEntity} from "../interfaces/base-entity.inteface.ts";
 import plural from "npm:plural";
 import { IBaseRepository } from "../interfaces/base-repository.interface.ts";
 
-
 export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> {
     private readonly collection: Collection<T>
 
