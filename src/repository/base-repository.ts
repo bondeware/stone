@@ -1,11 +1,8 @@
 import plural from "npm:plural";
-import {
-    ObjectId,
-    Collection,
-} from "https://deno.land/x/atlas_sdk@v1.1.2/mod.ts";
-import { Database } from "https://deno.land/x/atlas_sdk@v1.1.2/client.ts";
+import {Collection, ObjectId} from "https://deno.land/x/atlas_sdk@v1.1.2/mod.ts";
+import {Database} from "https://deno.land/x/atlas_sdk@v1.1.2/client.ts";
 import {BaseEntity} from "../interfaces/base-entity.inteface.ts";
-import { IBaseRepository } from "../interfaces/base-repository.interface.ts";
+import {IBaseRepository} from "../interfaces/base-repository.interface.ts";
 
 export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> {
     private readonly collection: Collection<T>
@@ -13,9 +10,8 @@ export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> 
     constructor(mongoDatabase: Database, entityClass: new () => T) {
         const collectionName = plural(entityClass.name.toLowerCase())
 
-        this.collection  = mongoDatabase.collection<T>(collectionName)
+        this.collection = mongoDatabase.collection<T>(collectionName)
     }
-
 
     async create(entity: T): Promise<T> {
         const result = await this.collection.insertOne(entity)
@@ -32,23 +28,23 @@ export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> 
     }
 
     async delete(id: string): Promise<void> {
-        await this.collection.deleteOne({ _id: new ObjectId(id) })
+        await this.collection.deleteOne({_id: new ObjectId(id)})
     }
 
     async findAll(page: number, size: number): Promise<T[]> {
         return await this.collection.find({
             limit: size,
             skip: page * size,
-            sort: { createdAt: -1 }
+            sort: {createdAt: -1}
         })
     }
 
     async findById(id: string): Promise<T> {
-        return await this.collection.findOne({ _id: new ObjectId(id) })
+        return await this.collection.findOne({_id: new ObjectId(id)})
     }
 
     async update(entity: T): Promise<T> {
-        await this.collection.updateOne({ _id: entity._id }, entity)
+        await this.collection.updateOne({_id: entity._id}, entity)
         return entity
     }
 
