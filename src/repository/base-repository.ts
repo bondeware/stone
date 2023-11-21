@@ -9,7 +9,6 @@ export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> 
 
     constructor(mongoDatabase: Database, entityClass: new () => T) {
         const collectionName = plural(entityClass.name.toLowerCase())
-
         this.collection = mongoDatabase.collection<T>(collectionName)
     }
 
@@ -46,5 +45,14 @@ export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> 
     async update(entity: T): Promise<T> {
         await this.collection.updateOne({_id: entity._id}, entity)
         return entity
+    }
+
+    async deleteMany(ids: string[]): Promise<void> {
+        await this.collection.deleteMany({_id: {$in: ids.map(id => new ObjectId(id))}})
+    }
+
+    async updateMany(entities: T[]): Promise<T[]> {
+        await Promise.all(entities.map(entity => this.update(entity)))
+        return entities
     }
 }
