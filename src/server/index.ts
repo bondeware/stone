@@ -57,8 +57,7 @@ export class StoneServer {
         Deno.serve({port: this.serverConfig.getPort()}, this.honoServer.fetch)
     }
 
-    public addRepository<T extends BaseEntity>(): void {
-        const repository = new BaseRepository<T>(this.mongoDatabase, T.name)
-        this.repositories.push(repository)
+    private addRepository<T extends BaseEntity>(entityName: string): void {
+        this.repositories.push(new BaseRepository<T>(this.mongoDatabase, entityName))
     }
 }
