@@ -47,5 +47,4 @@ export class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> 
         await this.collection.updateOne({_id: entity._id}, entity)
         return entity
     }
-
 }
