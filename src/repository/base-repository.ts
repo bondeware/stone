@@ -1,5 +1,4 @@
 import {
-    MongoClient,
     ObjectId,
     Collection,
 } from "https://deno.land/x/atlas_sdk@v1.1.2/mod.ts";
