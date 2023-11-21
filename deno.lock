@@ -1,0 +1,15 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "npm:plural": "npm:plural@1.1.0"
+    },
+    "npm": {
+      "plural@1.1.0": {
+        "integrity": "sha512-kX459gcOOllXDCPolRRBItCjvWU4bULIg4R3OYRMAp/4mZuBfF/H7b/SBsTJZkyc+GFkJV4ENitITOz45kyzqQ==",
+        "dependencies": {}
+      }
+    }
+  },
+  "remote": {}
+}

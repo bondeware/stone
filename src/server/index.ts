@@ -1,37 +1,58 @@
-
+import 'https://deno.land/std@0.206.0/dotenv/load.ts'
 import { Hono } from "https://deno.land/x/hono@v3.10.1/mod.ts"
 import { cache } from "https://deno.land/x/hono@v3.10.1/middleware.ts"
 import { logger, poweredBy, compress, timing, prettyJSON  } from "https://deno.land/x/hono@v3.10.1/middleware.ts"
+import {
+    MongoClient,
+} from "https://deno.land/x/atlas_sdk@v1.1.2/mod.ts";
 
+import { Database } from "https://deno.land/x/atlas_sdk@v1.1.2/client.ts";
+
+import { StoneServerConfig } from "../config/index.ts";
 
 export class StoneServer {
-    private server: Hono
+    private readonly serverConfig: StoneServerConfig
 
-    constructor(appName: string, appVersion: string) {
-        this.server = new Hono()
-        this.server.use('*', timing());
-        this.server.use('*', compress())
-        this.server.use('*', prettyJSON())
-        this.server.use('*', logger(), poweredBy())
-        this.server.get(
+    private honoServer: Hono
+    private readonly mongoClient: MongoClient;
+    private mongoDatabase: Database
+
+    constructor() {
+        this.serverConfig = new StoneServerConfig()
+        this.honoServer = new Hono()
+
+        this.honoServer.use('*', timing());
+        this.honoServer.use('*', compress())
+        this.honoServer.use('*', prettyJSON())
+        this.honoServer.use('*', logger(), poweredBy())
+        this.honoServer.get(
             '*',
             cache({
-                cacheName: appName,
+                cacheName: this.serverConfig.getAppName(),
                 cacheControl: 'max-age=3600',
                 wait: true,
             })
         )
 
-        this.server.get('/', (c) => {
+        this.honoServer.get('/', (c) => {
             return c.json({
-                name: appName,
-                version: appVersion
+                name: this.serverConfig.getAppName(),
+                version: this.serverConfig.getAppVersion()
             })
         })
+
+        this.mongoClient = new MongoClient({
+            endpoint: `https://data.mongodb-api.com/app/${this.serverConfig.getMongoAppId()}/endpoint/data/v1`,
+            dataSource: this.serverConfig.getMongoClusterName(),
+            auth: {
+                apiKey: this.serverConfig.getMongoApiKey(),
+            },
+        });
+
+        this.mongoDatabase = this.mongoClient.database(this.serverConfig.getMongoDatabaseName());
     }
 
     public start(): void {
-        const port = parseInt(Deno.env.get('PORT') || "8080")
-        Deno.serve({ port: port }, this.server.fetch)
+        Deno.serve({ port: this.serverConfig.getPort() }, this.honoServer.fetch)
     }
 }
